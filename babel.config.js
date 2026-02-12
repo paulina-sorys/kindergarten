@@ -77,6 +77,12 @@ module.exports = function(api) {
           async: false
         }
       ]
-    ].filter(Boolean)
+    ].filter(Boolean),
+    env: {
+      test: {
+        presets: [['@babel/preset-env', { targets: { node: 'current' } }]]
+      }
+    }
   }
 }
+

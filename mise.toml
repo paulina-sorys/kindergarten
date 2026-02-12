@@ -1,3 +1,22 @@
 [tools]
 node = "24"
 yarn = "3.8.7"
+
+[env]
+NODE_ENV = "development"
+
+[tasks.setup]
+description = "Setup project with Vue 3"
+run = """
+yarn install
+yarn add vue@3 vue-loader@17 @vitejs/plugin-vue
+yarn add --dev @vue/test-utils babel-jest jest
+"""
+
+[tasks.dev]
+description = "Start development server"
+run = "yarn dev"
+
+[tasks.test]
+description = "Run tests"
+run = "yarn test"
