@@ -1,11 +1,12 @@
 require "test_helper"
+require "minitest/focus"
 
 class UserTest < ActiveSupport::TestCase
   def setup
     @valid_user_params = {
       email: "user@example.com",
-      password: "securepassword",
-      password_confirmation: "securepassword"
+      password: "securePassword1",
+      password_confirmation: "securePassword1"
     }
   end
 
@@ -34,13 +35,13 @@ class UserTest < ActiveSupport::TestCase
   end
 
   test "should require matching password confirmation" do
-    user = User.new(email: "new@example.com", password: "pass1", password_confirmation: "pass2")
+    user = User.new(@valid_user_params.merge(password: "pasS1", password_confirmation: "pasS2"))
     assert_not user.valid?, "User is valid with non-matching password confirmation"
     assert_includes user.errors[:password_confirmation], "doesn't match Password"
   end
 
   test "should not allow empty strings for required fields" do
-    user = User.new(email: "new@example.com", password: "", password_confirmation: "")
+    user = User.new(@valid_user_params.merge(password: "", password_confirmation: ""))
     assert_not user.valid?, "User is valid with empty strings for password and password confirmation"
 
     assert_includes user.errors[:password], "can't be blank"
@@ -54,13 +55,13 @@ class UserTest < ActiveSupport::TestCase
   end
 
   test "should reject invalid email format" do
-    user = User.new(email: "invalid_email", password: "password", password_confirmation: "password")
+    user = User.new(@valid_user_params.merge(email: "invalid_email"))
     assert_not user.valid?, "Email has invalid format"
     assert_includes user.errors[:email], "is invalid"
   end
 
   test "should downcase email before save" do
-    user = User.create!(email: "USER@EXAMPLE.COM", password: "password", password_confirmation: "password")
+    user = User.create!(@valid_user_params.merge(email: "USER@EXAMPLE.COM"))
     assert_equal "user@example.com", user.email
   end
 end
