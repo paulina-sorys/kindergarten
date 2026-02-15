@@ -1,6 +1,14 @@
 require 'test_helper'
 
 class UsersControllerTest < ActionController::TestCase
+  test "rejects POST request without CSRF token" do
+    @request.env['HTTP_X_CSRF_TOKEN'] = nil
+
+    assert_raises(ActionController::InvalidAuthenticityToken) do
+      post :create, params: { some: 'data' }
+    end
+  end
+
   test "should create user with valid params" do
     assert_difference('User.count', 1) do
       post :create, params: { user: { email: 'newuser@example.com', password: 'password123', password_confirmation: 'password123' } }
