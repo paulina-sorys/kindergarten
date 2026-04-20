@@ -177,6 +177,8 @@ GEM
       prism (~> 1.5)
     minitest-focus (1.4.1)
       minitest (> 5.0)
+    mocha (3.1.0)
+      ruby2_keywords (>= 0.0.5)
     msgpack (1.8.0)
     mutex_m (0.3.0)
     net-imap (0.6.2)
@@ -311,6 +313,7 @@ GEM
     ruby-vips (2.3.0)
       ffi (~> 1.12)
       logger
+    ruby2_keywords (0.0.5)
     rubyzip (3.2.2)
     securerandom (0.4.1)
     selenium-webdriver (4.40.0)
@@ -415,6 +418,7 @@ DEPENDENCIES
   jbuilder
   kamal
   minitest-focus
+  mocha
   propshaft
   puma (>= 5.0)
   rails (~> 8.1.2)

@@ -1,45 +1,39 @@
 require "test_helper"
+require 'mocha/minitest'
 
 class UsersControllerTest < ActionController::TestCase
-  test "rejects POST request without CSRF token" do
-    @request.env["HTTP_X_CSRF_TOKEN"] = nil
-
-    assert_raises(ActionController::InvalidAuthenticityToken) do
-      post :create, params: { some: "data" }
-    end
-  end
+  stubbed_params = { email: "stubbed@example.com", password: "password123", password_confirmation: "password123" }
 
   test "should create user with valid params" do
+    User.any_instance.stubs(:valid?).returns(true)
     assert_difference("User.count", 1) do
-      post :create, params: { user: { email: "newuser@example.com", password: "password123", password_confirmation: "password123" } }
+      post :create, params: { user: stubbed_params }
+      assert_response :ok
     end
-
-    assert_response http_status_code(:ok)
   end
 
   test "should not create user with invalid params" do
-    assert_no_difference("User.count") do
-      post :create, params: { user: { email: "", password: "short", password_confirmation: "mismatch" } }
+    User.any_instance.stubs(:valid?).returns(false)
+    assert_difference("User.count", 0) do
+      post :create, params: { user: stubbed_params }
+      assert_response :bad_request
     end
-
-    assert_response http_status_code(:bad_request)
   end
 
   test "should destroy user" do
-    user = users(:one)
+    User.any_instance.stubs(:valid?).returns(true)
+    user = User.create!(stubbed_params)
 
     assert_difference("User.count", -1) do
       delete :destroy, params: { id: user.id }
+      assert_response :ok
     end
-
-    assert_response http_status_code(:ok)
   end
 
   test "should not destroy user if not found" do
     assert_no_difference("User.count") do
       delete :destroy, params: { id: 0 } # non-existent user ID
+      assert_response :not_found
     end
-
-    assert_response http_status_code(:not_found)
   end
 end

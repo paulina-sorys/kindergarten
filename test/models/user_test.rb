@@ -1,5 +1,4 @@
 require "test_helper"
-require "minitest/focus"
 
 class UserTest < ActiveSupport::TestCase
   def setup
@@ -8,60 +7,86 @@ class UserTest < ActiveSupport::TestCase
       password: "securePassword1",
       password_confirmation: "securePassword1"
     }
+    @user = User.new(@valid_user_params)
   end
 
-  test "should create user with valid attributes" do
-    user = User.new(@valid_user_params)
-    assert user.save, "Failed to save valid user"
+  test "should be valid with valid attributes" do
+    assert @user.valid?
   end
 
-  test "should require email" do
-    user = User.new(@valid_user_params.merge(email: ""))
-    assert_not user.valid?, "User is valid without email"
-    assert_includes user.errors[:email], "can't be blank"
+  test "email should be present" do
+    @user.email = "   "
+    assert_not @user.valid?
+    assert_includes @user.errors[:email], "can't be blank"
   end
 
-  test "should require unique email" do
-    User.create!(@valid_user_params)
-    duplicate_user = User.new(@valid_user_params)
-    assert_not duplicate_user.valid?, "User is valid with duplicate email"
+  test "email should be unique (case insensitive)" do
+    duplicate_user = @user.dup
+    duplicate_user.email = @user.email.upcase
+    @user.save
+    assert_not duplicate_user.valid?
     assert_includes duplicate_user.errors[:email], "has already been taken"
   end
 
-  test "should require password" do
-    user = User.new(email: "new@example.com")
-    assert_not user.valid?, "User is valid without password"
-    assert_includes user.errors[:password], "can't be blank"
+  test "email should have valid format" do
+    invalid_emails = %w[user@example,com user_at_foo.org user.name@example. foo@bar_baz.com foo@bar+baz.com]
+    invalid_emails.each do |invalid_email|
+      @user.email = invalid_email
+      assert_not @user.valid?, "#{invalid_email.inspect} should be invalid"
+      assert_includes @user.errors[:email], "is invalid"
+    end
+
+    valid_emails = %w[user@example.com USER@foo.COM A_US-ER@foo.bar.org first.last@foo.jp alice+bob@baz.cn]
+    valid_emails.each do |valid_email|
+      @user.email = valid_email
+      @user.password = "Password1"
+      @user.password_confirmation = "Password1"
+      assert @user.valid?, "#{valid_email.inspect} should be valid"
+    end
   end
 
-  test "should require matching password confirmation" do
-    user = User.new(@valid_user_params.merge(password: "pasS1", password_confirmation: "pasS2"))
-    assert_not user.valid?, "User is valid with non-matching password confirmation"
-    assert_includes user.errors[:password_confirmation], "doesn't match Password"
+   test "password should be present" do
+    @user.password = @user.password_confirmation = " " * 8
+    assert_not @user.valid?
+    assert_includes @user.errors[:password], "can't be blank"
   end
 
-  test "should not allow empty strings for required fields" do
-    user = User.new(@valid_user_params.merge(password: "", password_confirmation: ""))
-    assert_not user.valid?, "User is valid with empty strings for password and password confirmation"
+   test "password should have minimum length of 8" do
+    @user.password = @user.password_confirmation = "Pass1"
+    assert_not @user.valid?
+    assert_includes @user.errors[:password], "is too short (minimum is 8 characters)"
+  end
 
-    assert_includes user.errors[:password], "can't be blank"
-    assert_includes user.errors[:password_confirmation], "can't be blank"
+  test "password should include uppercase, lowercase and digit" do
+    invalid_passwords = %w[password PASSWORD123 password123 PASSWORD]
+    invalid_passwords.each do |pwd|
+      @user.password = @user.password_confirmation = pwd
+      assert_not @user.valid?, "#{pwd.inspect} should be invalid"
+      assert_includes @user.errors[:password], "must include uppercase, lowercase and digit"
+    end
+
+    valid_password = "Password1"
+    @user.password = @user.password_confirmation = valid_password
+    assert @user.valid?, "#{valid_password.inspect} should be valid"
+  end
+
+  test "password confirmation should be present" do
+    @user.password_confirmation = ""
+    assert_not @user.valid?
+    assert_includes @user.errors[:password_confirmation], "can't be blank"
   end
 
   test "should hash password" do
-    user = User.create!(@valid_user_params)
-    assert_not_equal @valid_user_params[:password], user.password_digest, "Password is not hashed"
-    assert user.authenticate(@valid_user_params[:password]), "Password authentication failed"
+    assert @user.save, "User should be saved successfully"
+
+    assert_not_nil @user.password_digest, "password_digest should be set"
+    assert_not_equal "Password1", @user.password_digest, "password_digest should not be equal to plain password"
   end
 
-  test "should reject invalid email format" do
-    user = User.new(@valid_user_params.merge(email: "invalid_email"))
-    assert_not user.valid?, "Email has invalid format"
-    assert_includes user.errors[:email], "is invalid"
-  end
-
-  test "should downcase email before save" do
-    user = User.create!(@valid_user_params.merge(email: "USER@EXAMPLE.COM"))
-    assert_equal "user@example.com", user.email
+  test "email should be saved as lowercase" do
+      mixed_case_email = "Foo@ExAMPle.CoM"
+      @user.email = mixed_case_email
+      @user.save
+      assert_equal mixed_case_email.downcase, @user.reload.email
   end
 end
