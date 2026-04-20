@@ -1,5 +1,5 @@
 require "test_helper"
-require 'mocha/minitest'
+require "mocha/minitest"
 
 class UsersControllerTest < ActionController::TestCase
   stubbed_params = { email: "stubbed@example.com", password: "password123", password_confirmation: "password123" }
