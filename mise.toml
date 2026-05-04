@@ -24,3 +24,7 @@ bin/rails server
 [tasks.test]
 description = "Run tests"
 run = "yarn test"
+
+[tasks.fix-lint]
+description = "Fix rails lint issues. Remember to commit them!"
+run = "rubocop -a"
