@@ -1,7 +1,7 @@
 [tools]
 node = "24"
 yarn = "3.8.7"
-ruby = "ruby-3.4.8"
+ruby = "4.0.3"
 
 [env]
 NODE_ENV = "development"

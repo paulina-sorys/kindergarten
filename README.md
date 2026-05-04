@@ -24,3 +24,5 @@ https://mise.jdx.dev/
 
 To see tasks and its descriptions:  ```mise tasks ls```
 To run task: ```mise run <task>```
+To check mise health: ```mise doctor```
+To install required tools: ```mise install```
