@@ -1,21 +1,25 @@
 [tools]
 node = "24"
 yarn = "3.8.7"
+ruby = "ruby-3.4.8"
 
 [env]
 NODE_ENV = "development"
 
-[tasks.setup]
-description = "Setup project with Vue 3"
+[tasks.fix-dev]
+description = "Run when mise taks dev throws error"
 run = """
+rm -rf node_modules yarn.lock package-lock.json pnpm-lock.yaml
+yarn cache clean
 yarn install
-yarn add vue@3 vue-loader@17 @vitejs/plugin-vue
-yarn add --dev @vue/test-utils babel-jest jest
 """
 
 [tasks.dev]
 description = "Start development server"
-run = "yarn dev"
+run = """
+yarn dev &
+bin/rails server
+"""
 
 [tasks.test]
 description = "Run tests"

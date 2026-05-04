@@ -32,8 +32,8 @@
     "postcss-import": "^16.1.1",
     "postcss-nested": "^7.0.2",
     "postcss-preset-env": "^11.1.2",
-    "vite": "^8.0.9",
-    "vite-plugin-ruby": "^5.2.1",
+    "vite": "^8.0.0",
+    "vite-plugin-ruby": "^5.2.0",
     "vitest": "^4.0.18"
   },
   "scripts": {
@@ -43,5 +43,6 @@
     "test:watch": "vitest --watch",
     "test:run": "vitest run",
     "test:ui": "vitest --ui"
-  }
+  },
+  "type": "module"
 }

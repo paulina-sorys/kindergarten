@@ -1,24 +1,26 @@
-# README
+# Front
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+Rails + Vite using "vite_rails" gem.
+Guide: https://vite-ruby.netlify.app/guide/rails
 
-Things you may want to cover:
+# Local development
 
-* Ruby version
+```mise run dev```
 
-* System dependencies
+# How to check rails version
 
-* Configuration
+```rails -v```
 
-* Database creation
+# What is mise
 
-* Database initialization
+Mise is a unified, polyglot tool and task management solution designed to keep your project's tools, environment variables, and tasks organized in one place. It simplifies the process of installing and managing development tools across different languages and frameworks, making it easier to automate and maintain consistent development environments.
 
-* How to run the test suite
+You can define tasks, manage dependencies, and automate workflows for various parts of your project (e.g., backend and frontend) using a single configuration file (mise.toml).
 
-* Services (job queues, cache servers, search engines, etc.)
+For detailed documentation and usage instructions, visit the official Mise documentation here:
+https://mise.jdx.dev/
 
-* Deployment instructions
+# How to use mise
 
-* ...
+To see tasks and its descriptions:  ```mise tasks ls```
+To run task: ```mise run <task>```
